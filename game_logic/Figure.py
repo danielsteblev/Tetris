@@ -1,23 +1,43 @@
-import typing
-
-from game_logic.Block import Block
-
-
+# Классы фигур
 class Figure:
-    def __init__(self, name: str, shape: list[Block]):
-        self.__name = name
-        self.__shape = shape
+    shape = []
 
-    @property
-    def name(self):
-        return self.__name
+    def get_width(self):
+        return len(self.shape[0])
 
-    @property
-    def shape(self):
-        return self.__shape
-
-    def __str__(self) -> str:
-        return f"Название {self.__name}, координаты блоков: {[str(self.__shape[i]) for i in range(len(self.__shape))]}"
+    def get_height(self):
+        return len(self.shape)
 
 
+class ShapeSquare(Figure):
+    shape = [[1, 1],
+             [1, 1]]
 
+
+class ShapeLine(Figure):
+    shape = [[1, 1, 1, 1]]
+
+
+class ShapeG(Figure):
+    shape = [[0, 0, 1],
+             [1, 1, 1]]
+
+
+class ShapeReverseG(Figure):
+    shape = [[1, 0, 0],
+             [1, 1, 1]]
+
+
+class ShapeT(Figure):
+    shape = [[0, 1, 0],
+             [1, 1, 1]]
+
+
+class ShapeZ(Figure):
+    shape = [[1, 1, 0],
+             [0, 1, 1]]
+
+
+class ShapeReverseZ(Figure):
+    shape = [[0, 1, 1],
+             [1, 1, 0]]
