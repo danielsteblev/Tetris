@@ -21,11 +21,12 @@ class GameSessionWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.cur_fugures = None
         self.cell_size = None
         self.figure = None
         self.rules_window = RulesWindow()
 
-        self.cur_figures = []
+        self.cur_color = None
 
         self.game = None
         self.is_rules_shown = False
@@ -86,7 +87,7 @@ class GameSessionWindow(QMainWindow):
                 cur_color = QColor(255, 255, 255)
 
                 if self.game.board[i][j] == 1:
-                    cur_color.setNamedColor("#f3ca20")
+                    cur_color = self.cur_fugures[0].color
 
                 self.draw_square(painter, QColor(0, 0, 0), i * self.cell_size, j * self.cell_size, self.cell_size)
                 self.draw_square(painter, cur_color, i * self.cell_size + 1, j * self.cell_size + 1, self.cell_size)
@@ -146,25 +147,55 @@ class GameSessionWindow(QMainWindow):
             event.ignore()
 
     def mouseMoveEvent(self, event):
-        print(event.x(), event.y())
+        mouse_pos = event.pos()
 
-        self.figure1.move(event.x(), event.y())
-        if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
-                and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() == Qt.LeftButton:
-            event.ignore()
-        elif self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
-                and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() != Qt.LeftButton:
-            mouse_pos = event.pos()
+        if self.figure1.x() < mouse_pos < self.figure1.x() + self.figure1.width() \
+            and self.figure1.y() < mouse_pos < self.figure1.y() + self.figure1.height():
 
-            cell_row = mouse_pos.y() // self.cell_size
-            cell_col = mouse_pos.x() // self.cell_size
+            self.figure1.move(event.x(), event.y())
+            if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
+                    and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() == Qt.LeftButton:
+                event.ignore()
+            elif self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
+                    and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() != Qt.LeftButton:
 
-            for i in range(min(len(self.cur_fugures[0].shape), self.game.width - cell_col)):
-                for j in range(min(len(self.cur_fugures[0].shape[0]), self.game.height - cell_row)):
-                    self.game.board[i + cell_col][j + cell_row] = 1
+                cell_row = mouse_pos.y() // self.cell_size
+                cell_col = mouse_pos.x() // self.cell_size
+
+                cur_f = self.cur_fugures[0]
+
+                for i in range(min(len(self.cur_fugures[0].shape), self.game.width - cell_col)):
+                    for j in range(min(len(self.cur_fugures[0].shape[0]), self.game.height - cell_row)):
+                        self.game.board[i + cell_col][j + cell_row] = cur_f.shape[i][j]
                     # self.game.board[i + cell_col][j + cell_row] = self.cur_figures[0][i][j]
 
-            self.figure1.clear()
+                self.figure1.clear()
+
+            if self.figure1.x() < mouse_pos < self.figure1.x() + self.figure1.width() \
+                    and self.figure1.y() < mouse_pos < self.figure1.y() + self.figure1.height():
+
+                self.figure1.move(event.x(), event.y())
+                if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
+                        and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() == Qt.LeftButton:
+                    event.ignore()
+                elif self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
+                        and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() != Qt.LeftButton:
+
+                    cell_row = mouse_pos.y() // self.cell_size
+                    cell_col = mouse_pos.x() // self.cell_size
+
+                    cur_f = self.cur_fugures[0]
+
+                    for i in range(min(len(self.cur_fugures[0].shape), self.game.width - cell_col)):
+                        for j in range(min(len(self.cur_fugures[0].shape[0]), self.game.height - cell_row)):
+                            self.game.board[i + cell_col][j + cell_row] = cur_f.shape[i][j]
+                        # self.game.board[i + cell_col][j + cell_row] = self.cur_figures[0][i][j]
+
+
+
+
+
+
             self.draw_cells()
             self.update()
 
