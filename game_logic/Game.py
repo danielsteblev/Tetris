@@ -1,6 +1,9 @@
 import json
 import random
 import string
+import time
+from datetime import date
+
 from game_logic import Figure
 from gui import GameSessionWindow
 
@@ -40,6 +43,7 @@ class Game:
         return self._figures
 
     def save_game(self):
+        from datetime import datetime
         game_info = {
             "field_size": {
                 "width": self._board_width,
@@ -47,7 +51,8 @@ class Game:
             },
             "token": self.__GAME_KEY,
             "field": self._game_field,
-            "score": self._score
+            "score": self._score,
+            "date": datetime.now().isoformat()
         }
 
         with open(f"game_sessions/{self.__GAME_KEY}.json", 'w') as file:
