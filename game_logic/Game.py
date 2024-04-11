@@ -35,7 +35,11 @@ class Game:
         print(f"The game with token={self.__GAME_KEY} was successfully created with the following settings:\n"
               f"game_field width: {self._board_width} \ngame_field height: {self._board_height}\n")
 
-        self._score = 0
+        if not 'score' in settings:
+            self._score = 0
+        else:
+            self._score = settings['score']
+
         print(self._game_field)
 
     @property
@@ -76,3 +80,7 @@ class Game:
     @property
     def board(self):
         return self._game_field
+
+    @property
+    def score(self):
+        return self._score

@@ -3,9 +3,7 @@ import os
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QLineEdit, QMainWindow, QVBoxLayout, QPushButton
 
-from game_logic.Game import Game
 from gui.GameSessionWindow import GameSessionWindow
-
 
 class TokenWindow(QWidget):
     def __init__(self):
@@ -42,4 +40,10 @@ class TokenWindow(QWidget):
         self.inputLabel.clear()
         self.tokenError.clear()
         self.close()
+
+
+
+
+
+
 

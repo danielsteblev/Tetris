@@ -8,11 +8,10 @@ from PyQt5.uic.properties import QtGui
 
 from gui.GameSessionWindow import GameSessionWindow
 from gui.RulesWindow import RulesWindow
-from gui.SettingsWindow import SettingsWindow
 from gui.TokenWindow import TokenWindow
 
 
-class GameWindow(QMainWindow):
+class MainMenu(QMainWindow):
     CANVAS_SIZE = 720
     CANVAS_WIDTH = 745
     CANVAS_HEIGHT = 980
@@ -27,8 +26,6 @@ class GameWindow(QMainWindow):
         self.token_window = TokenWindow()
         self.rules_window = RulesWindow()
         self.game_window = GameSessionWindow()
-
-
 
         self.init_ui()
 
@@ -51,7 +48,9 @@ class GameWindow(QMainWindow):
     #  Показываю окно с вводом токена
     def token_game_btn(self):
         self.token_window.show_token_dialog()
-        self.close()
+
+
+        # self.close()
 
     def play_game(self):
         print("Игра началась")
