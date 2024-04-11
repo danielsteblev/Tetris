@@ -17,7 +17,7 @@ class Logic:
             # Проверка линии по горизонтали
             if all(elem == 1 for elem in game.board[i]):
                 game.board[i] = [0] * len(game.board[i])
-                print("yes")
+                print("+10")
                 game.score += 10
 
             # Проверка линии по вертикали

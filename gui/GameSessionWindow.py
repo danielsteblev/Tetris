@@ -156,12 +156,9 @@ class GameSessionWindow(QMainWindow):
         #         and self.figure1.y() < mouse_pos < self.figure1.y() + self.figure1.height():
 
         self.figure1.move(event.x(), event.y())
-        if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
-                and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() == Qt.LeftButton:
-            event.ignore()
 
-        elif self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
-                and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() != Qt.LeftButton:
+        if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
+                and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height():
 
             cell_row = mouse_pos.y() // self.cell_size
             cell_col = mouse_pos.x() // self.cell_size
@@ -178,6 +175,8 @@ class GameSessionWindow(QMainWindow):
         # self.draw_cur_figures()
 
         self.update()
+
+
 
     @staticmethod
     def draw_square(painter, color, x, y, size):
