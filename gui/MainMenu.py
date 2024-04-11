@@ -2,7 +2,7 @@ import os
 
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QColor, QPainter, QPen
+from PyQt5.QtGui import QColor, QPainter, QPen, QIcon
 from PyQt5.QtWidgets import QLabel, QMainWindow, QDesktopWidget
 from PyQt5.uic.properties import QtGui
 
@@ -35,6 +35,7 @@ class GameWindow(QMainWindow):
     def init_ui(self):
         uic.loadUi('config_file/Menu.ui', self)
         self.setWindowTitle('Tetris')
+        self.setWindowIcon(QIcon('images/icon.png'))
 
         self.newGameButton.clicked.connect(self.new_game_btn)
 

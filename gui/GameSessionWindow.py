@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen
+from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon
 from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget, QMessageBox
 
 from game_logic.Game import Game
@@ -30,6 +30,8 @@ class GameSessionWindow(QMainWindow):
     def init_ui(self):
         uic.loadUi('config_file/GameSessionWindow.ui', self)
         self.figure1.installEventFilter(self)
+        self.setWindowIcon(QIcon('images/icon.png'))
+
 
         canvas = QPixmap(721, 721)
         canvas.fill(Qt.gray)
