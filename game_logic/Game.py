@@ -2,6 +2,7 @@ import json
 import random
 import string
 from game_logic import Figure
+from gui import GameSessionWindow
 
 
 class Game:
@@ -15,6 +16,8 @@ class Game:
                          Figure.ShapeReverseG, Figure.ShapeSquare,
                          Figure.ShapeT, Figure.ShapeZ,
                          Figure.ShapeReverseZ]
+
+
         if not 'field' in settings:
             self._game_field = [[0 for _ in range(self._board_width)] for _ in range(self._board_height)]
         else:
@@ -26,14 +29,11 @@ class Game:
         else:
             self.__GAME_KEY = settings["token"]
 
-
         print(f"The game with token={self.__GAME_KEY} was successfully created with the following settings:\n"
               f"game_field width: {self._board_width} \ngame_field height: {self._board_height}\n")
 
         self._score = 0
         print(self._game_field)
-
-        self.save_game()
 
     @property
     def figures(self):
@@ -52,8 +52,9 @@ class Game:
 
         with open(f"game_sessions/{self.__GAME_KEY}.json", 'w') as file:
             json.dump(game_info, file)
-
             file.close()
+
+        print("Игра успешно сохранена!")
 
     @property
     def width(self):

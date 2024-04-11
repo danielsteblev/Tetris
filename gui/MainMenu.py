@@ -6,7 +6,6 @@ from PyQt5.QtGui import QColor, QPainter, QPen
 from PyQt5.QtWidgets import QLabel, QMainWindow, QDesktopWidget
 from PyQt5.uic.properties import QtGui
 
-from game_logic.Game import Game
 from gui.GameSessionWindow import GameSessionWindow
 from gui.RulesWindow import RulesWindow
 from gui.SettingsWindow import SettingsWindow
@@ -51,6 +50,7 @@ class GameWindow(QMainWindow):
     #  Показываю окно с вводом токена
     def token_game_btn(self):
         self.token_window.show_token_dialog()
+        self.close()
 
     def play_game(self):
         print("Игра началась")

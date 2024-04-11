@@ -1,6 +1,7 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication
+
 from gui.MainMenu import GameWindow
 from gui.SettingsWindow import SettingsWindow
 from gui.TokenWindow import TokenWindow

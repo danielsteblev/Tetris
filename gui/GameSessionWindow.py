@@ -1,7 +1,7 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen
-from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget
+from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget, QMessageBox
 
 from game_logic.Game import Game
 from game_logic.Logic import Logic
@@ -44,8 +44,9 @@ class GameSessionWindow(QMainWindow):
         self.figure2.setPixmap(figure2)
         self.figure3.setPixmap(figure3)
 
-        self.center_window()
+        self.saveButton.clicked.connect(lambda: self.game.save_game())
 
+        self.center_window()
 
     def start_new_game(self, config_file):
         print("Initializing new game...")
@@ -120,6 +121,14 @@ class GameSessionWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, 'Подтверждение выхода', 'Вы уверены, что хотите выйти? ВНИМАНИЕ! Не забудьте сохранить игру!',
+                                     QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
     @staticmethod
     def draw_square(painter, color, x, y, size):
         painter.setBrush(color)
@@ -132,3 +141,11 @@ class GameSessionWindow(QMainWindow):
     @is_rules_shown.setter
     def is_rules_shown(self, value):
         self._is_rules_shown = value
+
+    @property
+    def is_game_saved(self):
+        return self._is_game_saved
+
+    @staticmethod
+    def is_game_saved_true(self, value):
+        self._is_game_saved = value
