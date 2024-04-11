@@ -66,8 +66,8 @@
      <rect>
       <x>780</x>
       <y>130</y>
-      <width>211</width>
-      <height>181</height>
+      <width>200</width>
+      <height>200</height>
      </rect>
     </property>
     <property name="cursor">
@@ -85,8 +85,8 @@
      <rect>
       <x>800</x>
       <y>570</y>
-      <width>211</width>
-      <height>181</height>
+      <width>200</width>
+      <height>200</height>
      </rect>
     </property>
     <property name="cursor">
@@ -101,8 +101,8 @@
      <rect>
       <x>790</x>
       <y>350</y>
-      <width>211</width>
-      <height>181</height>
+      <width>200</width>
+      <height>200</height>
      </rect>
     </property>
     <property name="cursor">
@@ -116,7 +116,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>740</y>
+      <y>755</y>
       <width>321</width>
       <height>51</height>
      </rect>
@@ -139,8 +139,8 @@
    <widget class="QPushButton" name="menuButton">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>740</y>
+      <x>40</x>
+      <y>755</y>
       <width>321</width>
       <height>51</height>
      </rect>

@@ -4,11 +4,13 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QLineEdit, QMainWindow, QVBoxLayout, QPushButton
 
 from game_logic.Game import Game
+from gui.GameSessionWindow import GameSessionWindow
 
 
 class TokenWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.game_window = GameSessionWindow()
         self.init_ui()
 
     def init_ui(self):
@@ -29,6 +31,9 @@ class TokenWindow(QWidget):
             if token == filename[:len(filename) - 5]:  # т.к знаю что все файлы json - просто обрежу срезом .json
                 self.tokenError.clear()
                 print("Success!")
+                self.close()
+                self.game_window = GameSessionWindow()
+                self.game_window.start_new_game(f"game_sessions/{filename}")
                 break
             else:
                 self.tokenError.setText("Токен не найден! Повторите попытку.")

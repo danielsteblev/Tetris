@@ -29,6 +29,8 @@ class GameWindow(QMainWindow):
         self.rules_window = RulesWindow()
         self.game_window = GameSessionWindow()
 
+
+
         self.init_ui()
 
     def init_ui(self):
@@ -44,7 +46,7 @@ class GameWindow(QMainWindow):
 
     def new_game_btn(self):
         self.close()
-        self.game_window.start_new_game()
+        self.game_window.start_new_game("config_file/settings.json")
 
     #  Показываю окно с вводом токена
     def token_game_btn(self):

@@ -15,6 +15,9 @@ class RulesWindow(QWidget):
         self.errorCheckBox.setStyleSheet("color: red;")
         self.setWindowTitle("Game rules")
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowCloseButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMinimizeButtonHint)
+        self.setFixedSize(400, 562)
+
 
     def show_rules(self):
         self.show()

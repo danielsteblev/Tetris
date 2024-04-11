@@ -2,10 +2,10 @@
 class Figure:
     shape = []
 
-    def get_width(self):
+    def width(self):
         return len(self.shape[0])
 
-    def get_height(self):
+    def height(self):
         return len(self.shape)
 
 

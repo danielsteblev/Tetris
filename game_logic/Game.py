@@ -15,14 +15,24 @@ class Game:
                          Figure.ShapeReverseG, Figure.ShapeSquare,
                          Figure.ShapeT, Figure.ShapeZ,
                          Figure.ShapeReverseZ]
-        self._game_field = [[0 for _ in range(self._board_width)] for _ in range(self._board_height)]
-        characters = string.ascii_letters + string.digits
-        self.__GAME_KEY = ''.join(random.choice(characters) for _ in range(10))
+        if not 'field' in settings:
+            self._game_field = [[0 for _ in range(self._board_width)] for _ in range(self._board_height)]
+        else:
+            self._game_field = settings['field']
+
+        if not 'token' in settings:
+            characters = string.ascii_letters + string.digits
+            self.__GAME_KEY = ''.join(random.choice(characters) for _ in range(10))
+        else:
+            self.__GAME_KEY = settings["token"]
+
+
         print(f"The game with token={self.__GAME_KEY} was successfully created with the following settings:\n"
               f"game_field width: {self._board_width} \ngame_field height: {self._board_height}\n")
 
         self._score = 0
         print(self._game_field)
+
         self.save_game()
 
     @property
@@ -57,4 +67,6 @@ class Game:
     def token(self):
         return self.__GAME_KEY
 
-
+    @property
+    def board(self):
+        return self._game_field
