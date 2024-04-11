@@ -28,6 +28,7 @@ class TokenWindow(QWidget):
         for filename in os.listdir("game_sessions"):
             if token == filename[:len(filename) - 5]:  # т.к знаю что все файлы json - просто обрежу срезом .json
                 self.tokenError.clear()
+                self.inputLabel.clear()
                 print("Success!")
                 self.close()
                 self.game_window = GameSessionWindow()

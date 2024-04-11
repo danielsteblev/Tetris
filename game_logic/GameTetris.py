@@ -1,25 +1,22 @@
 import json
 import random
 import string
-import time
-from datetime import date
 
 from game_logic import Figure
-from gui import GameSessionWindow
 
 
-class Game:
-
+class GameTetris:
     def __init__(self, settings_file):
         with open(settings_file) as file:
             settings = json.load(file)
+
         self._board_width = settings['field_size']['width']
         self._board_height = settings['field_size']['height']
+
         self._figures = [Figure.ShapeT, Figure.ShapeLine,
                          Figure.ShapeReverseG, Figure.ShapeSquare,
                          Figure.ShapeT, Figure.ShapeZ,
                          Figure.ShapeReverseZ]
-
 
         if not 'field' in settings:
             self._game_field = [[0 for _ in range(self._board_width)] for _ in range(self._board_height)]
@@ -32,9 +29,6 @@ class Game:
         else:
             self.__GAME_KEY = settings["token"]
 
-        print(f"The game with token={self.__GAME_KEY} was successfully created with the following settings:\n"
-              f"game_field width: {self._board_width} \ngame_field height: {self._board_height}\n")
-
         if not 'score' in settings:
             self._score = 0
         else:
@@ -43,7 +37,14 @@ class Game:
         self.full_width_string = [1 for _ in range(self.width)]
         self.full_height_string = [1 for _ in range(self.height)]
 
-        print(self._game_field)
+        # массив нынешних фигур
+        if not "cur_figures" in settings:
+            self.cur_figures = []
+        else:
+            self.cur_figures = settings['cur_figures']
+
+        print(f"The game with token={self.__GAME_KEY} was successfully created with the following settings:\n"
+              f"game_field width: {self._board_width} \ngame_field height: {self._board_height}\n")
 
     @property
     def figures(self):
@@ -88,13 +89,14 @@ class Game:
     def score(self):
         return self._score
 
-    def check_lines(self):
-        for i in range(self.width):
-            if all(self.board[i]):
-                self.board[i] = 0
-
-        self.score += 10
-
     @score.setter
     def score(self, value):
         self._score = value
+
+    @property
+    def cur_figures(self):
+        return self._figures
+
+    @cur_figures.setter
+    def cur_figures(self, value):
+        self._cur_figures = value

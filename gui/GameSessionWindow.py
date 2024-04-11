@@ -3,8 +3,7 @@ from PyQt5.QtCore import Qt, QEvent, QMimeData
 from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon, QDrag
 from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget, QMessageBox
 
-from game_logic.Figure import Figure
-from game_logic.Game import Game
+from game_logic.GameTetris import GameTetris
 from game_logic.Logic import Logic
 from gui.RulesWindow import RulesWindow
 
@@ -21,9 +20,10 @@ class GameSessionWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.cur_fugures = None
+
         self.cell_size = None
         self.figure = None
+
         self.rules_window = RulesWindow()
 
         self.cur_color = None
@@ -60,15 +60,13 @@ class GameSessionWindow(QMainWindow):
 
     def start_new_game(self, config_file):
         print("Initializing new game...")
-        self.game = Game(config_file)
+        self.game = GameTetris(config_file)
         self.setWindowTitle(f"Game/{self.game.token}")
         self.score.setText(f"{self.game.score}")
-
 
         # Тут по логике должен рисовать поле
         self.draw_cells()
         self.draw_cur_figures()
-
 
         self.show()
 
@@ -89,18 +87,21 @@ class GameSessionWindow(QMainWindow):
                 cur_color = QColor(255, 255, 255)
 
                 if self.game.board[i][j] == 1:
-                    cur_color = self.cur_fugures[0].color
-                    self.game.check_lines()
+                    cur_color = self.game.cur_figures[0].color
 
                 self.draw_square(painter, QColor(0, 0, 0), i * self.cell_size, j * self.cell_size, self.cell_size)
                 self.draw_square(painter, cur_color, i * self.cell_size + 1, j * self.cell_size + 1, self.cell_size)
+
+                Logic.check_lines(game=self.game)  # проверка полных линий
+                self.score.setText(f"{self.game.score}")
 
         painter.end()
         self.update()
 
     def draw_cur_figures(self):
-        self.cur_fugures = Logic.generate_cur_figures(self.game)
-        print(self.cur_fugures)
+        # генерирую 3 фигуры
+        cur_figures = Logic.generate_cur_figures(self.game)
+        self.game.cur_figures = cur_figures
 
         painter_figure1 = QPainter(self.figure1.pixmap())
         painter_figure1.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
@@ -111,23 +112,23 @@ class GameSessionWindow(QMainWindow):
         painter_figure3 = QPainter(self.figure3.pixmap())
         painter_figure3.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
-        for j in range(len(self.cur_fugures[0].shape)):
-            for k in range(len(self.cur_fugures[0].shape[j])):
-                if self.cur_fugures[0].shape[j][k] == 1:
-                    self.draw_square(painter_figure1, self.cur_fugures[0].color, j * self.cell_size, k * self.cell_size,
-                                     self.cell_size)
+        for j in range(len(self.game.cur_figures[0].shape)):
+            for k in range(len(self.game.cur_figures[0].shape[j])):
+                if self.game.cur_figures[0].shape[j][k] == 1:
+                    self.draw_square(painter_figure1, self.game.cur_figures[0].color, j * self.cell_size,
+                                     k * self.cell_size, self.cell_size)
 
-        for j in range(len(self.cur_fugures[1].shape)):
-            for k in range(len(self.cur_fugures[1].shape[j])):
-                if self.cur_fugures[1].shape[j][k] == 1:
-                    self.draw_square(painter_figure2, self.cur_fugures[1].color, j * self.cell_size, k * self.cell_size,
-                                     self.cell_size)
+        for j in range(len(self.game.cur_figures[1].shape)):
+            for k in range(len(self.game.cur_figures[1].shape[j])):
+                if self.game.cur_figures[1].shape[j][k] == 1:
+                    self.draw_square(painter_figure2, self.game.cur_figures[1].color,
+                                     j * self.cell_size, k * self.cell_size, self.cell_size)
 
-        for j in range(len(self.cur_fugures[2].shape)):
-            for k in range(len(self.cur_fugures[2].shape[j])):
-                if self.cur_fugures[2].shape[j][k] == 1:
-                    self.draw_square(painter_figure3, self.cur_fugures[2].color, j * self.cell_size, k * self.cell_size,
-                                     self.cell_size)
+        for j in range(len(self.game.cur_figures[2].shape)):
+            for k in range(len(self.game.cur_figures[2].shape[j])):
+                if self.game.cur_figures[2].shape[j][k] == 1:
+                    self.draw_square(painter_figure3, self.game.cur_figures[2].color,
+                                     j * self.cell_size, k * self.cell_size, self.cell_size)
 
         painter_figure1.end()
         painter_figure2.end()
@@ -158,25 +159,25 @@ class GameSessionWindow(QMainWindow):
         if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
                 and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() == Qt.LeftButton:
             event.ignore()
+
         elif self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
                 and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height() and event.button() != Qt.LeftButton:
 
             cell_row = mouse_pos.y() // self.cell_size
             cell_col = mouse_pos.x() // self.cell_size
 
-            cur_f = self.cur_fugures[0]
+            cur_f = self.game.cur_figures[0]
 
-            for i in range(min(len(self.cur_fugures[0].shape), self.game.width - cell_col)):
-                for j in range(min(len(self.cur_fugures[0].shape[0]), self.game.height - cell_row)):
+            for i in range(min(len(self.game.cur_figures[0].shape), self.game.width - cell_col)):
+                for j in range(min(len(self.game.cur_figures[0].shape[0]), self.game.height - cell_row)):
                     self.game.board[i + cell_col][j + cell_row] = cur_f.shape[i][j]
                     # self.game.board[i + cell_col][j + cell_row] = self.cur_figures[0][i][j]
 
             self.figure1.clear()
-
+            self.draw_cells()
         # self.draw_cur_figures()
-        self.draw_cells()
-        self.update()
 
+        self.update()
 
     @staticmethod
     def draw_square(painter, color, x, y, size):
