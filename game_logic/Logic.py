@@ -13,3 +13,4 @@ class Logic:
     @staticmethod
     def start_game(game: Game):
         cur_figures = Logic.generate_cur_figures(game)  # массив из 3 фигур которые будем таскать
+

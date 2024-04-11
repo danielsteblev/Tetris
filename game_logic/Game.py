@@ -40,6 +40,9 @@ class Game:
         else:
             self._score = settings['score']
 
+        self.full_width_string = [1 for _ in range(self.width)]
+        self.full_height_string = [1 for _ in range(self.height)]
+
         print(self._game_field)
 
     @property
@@ -84,3 +87,14 @@ class Game:
     @property
     def score(self):
         return self._score
+
+    def check_lines(self):
+        for i in range(self.width):
+            if all(self.board[i]):
+                self.board[i] = 0
+
+        self.score += 10
+
+    @score.setter
+    def score(self, value):
+        self._score = value
