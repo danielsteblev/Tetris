@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QEvent, QMimeData
-from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon, QDrag
+from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon, QDrag, QCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget, QMessageBox
 
 from game_logic.GameTetris import GameTetris
@@ -51,8 +51,19 @@ class GameSessionWindow(QMainWindow):
 
         self.canvas.setPixmap(canvas)
         self.figure1.setPixmap(canvas_figure1)
+        self.figure1.setMouseTracking(True)
+        self.figure1.mouseMoveEvent = self.mouseMoveEvent
+        self.figure1.mouseReleaseEvent = self.mouseReleaseEvent
+
         self.figure2.setPixmap(canvas_figure2)
+        self.figure2.setMouseTracking(True)
+        self.figure2.mouseMoveEvent = self.mouseMoveEvent
+        self.figure2.mouseReleaseEvent = self.mouseReleaseEvent
+
         self.figure3.setPixmap(canvas_figure3)
+        self.figure3.setMouseTracking(True)
+        self.figure3.mouseMoveEvent = self.mouseMoveEvent
+        self.figure3.mouseReleaseEvent = self.mouseReleaseEvent
 
         self.saveButton.clicked.connect(lambda: self.game.save_game())
 
@@ -115,20 +126,20 @@ class GameSessionWindow(QMainWindow):
         for j in range(len(self.game.cur_figures[0].shape)):
             for k in range(len(self.game.cur_figures[0].shape[j])):
                 if self.game.cur_figures[0].shape[j][k] == 1:
-                    self.draw_square(painter_figure1, self.game.cur_figures[0].color, j * self.cell_size,
-                                     k * self.cell_size, self.cell_size)
+                    self.draw_square(painter_figure1, self.game.cur_figures[0].color, j * 40,
+                                     k * 40, 40)
 
         for j in range(len(self.game.cur_figures[1].shape)):
             for k in range(len(self.game.cur_figures[1].shape[j])):
                 if self.game.cur_figures[1].shape[j][k] == 1:
                     self.draw_square(painter_figure2, self.game.cur_figures[1].color,
-                                     j * self.cell_size, k * self.cell_size, self.cell_size)
+                                     j * 40, k * 40, 40)
 
         for j in range(len(self.game.cur_figures[2].shape)):
             for k in range(len(self.game.cur_figures[2].shape[j])):
                 if self.game.cur_figures[2].shape[j][k] == 1:
                     self.draw_square(painter_figure3, self.game.cur_figures[2].color,
-                                     j * self.cell_size, k * self.cell_size, self.cell_size)
+                                     j * 40, k * 40, 40)
 
         painter_figure1.end()
         painter_figure2.end()
@@ -149,34 +160,47 @@ class GameSessionWindow(QMainWindow):
         else:
             event.ignore()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event):  # перемещение мыши
         mouse_pos = event.pos()
+        if event.buttons() == Qt.LeftButton:
+            self.figure1.move(self.figure1.pos() + event.pos())
+            print(mouse_pos)
 
-        # if self.figure1.x() < mouse_pos < self.figure1.x() + self.figure1.width() \
-        #         and self.figure1.y() < mouse_pos < self.figure1.y() + self.figure1.height():
+    def mouseReleaseEvent(self, event):  # отпускаю мышь
+        print("Мышь отпущена!")
 
-        self.figure1.move(event.x(), event.y())
+        x, y = self.figure1.pos().x(), self.figure1.pos().y()
+        print(x, y)
 
-        if self.canvas.x() < event.x() < self.canvas.x() + self.canvas.width() \
-                and self.canvas.y() < event.y() < self.canvas.y() + self.canvas.height():
+        #  если в пределах игрового поля
+        if self.canvas.x() < x < self.canvas.x() + self.canvas.width() \
+                and self.canvas.y() < y < self.canvas.y() + self.canvas.height():
 
-            cell_row = mouse_pos.y() // self.cell_size
-            cell_col = mouse_pos.x() // self.cell_size
+            cell_row = y // self.cell_size
+            cell_col = x // self.cell_size
 
             cur_f = self.game.cur_figures[0]
 
-            for i in range(min(len(self.game.cur_figures[0].shape), self.game.width - cell_col)):
-                for j in range(min(len(self.game.cur_figures[0].shape[0]), self.game.height - cell_row)):
-                    self.game.board[i + cell_col][j + cell_row] = cur_f.shape[i][j]
-                    # self.game.board[i + cell_col][j + cell_row] = self.cur_figures[0][i][j]
+            self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
 
             self.figure1.clear()
+            self.figure2.clear()
+            self.figure3.clear()
+
             self.draw_cells()
-        # self.draw_cur_figures()
+
+            self.figure1.move(800, 130)
+
+        else:
+            print("Фигура вне игрового поля!")
+            self.figure1.move(800, 130)
 
         self.update()
 
-
+    def add_figure_to_board(self, cell_x, cell_y, figure):
+        for i in range(min(len(figure.shape), self.game.width - cell_x)):
+            for j in range(min(len(figure.shape[0]), self.game.height - cell_y)):
+                self.game.board[i + cell_x][j + cell_y] = figure.shape[i][j]
 
     @staticmethod
     def draw_square(painter, color, x, y, size):
