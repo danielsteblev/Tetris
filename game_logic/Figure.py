@@ -14,11 +14,11 @@ class Figure:
 
 
 class ShapeSquare(Figure):
-
     shape = [[1, 1],
              [1, 1]]
 
     color = QColor(40, 222, 210)
+
 
 class ShapeLine(Figure):
     shape = [[1, 1, 1, 1]]
@@ -59,3 +59,12 @@ class ShapeReverseZ(Figure):
              [1, 1, 0]]
 
     color = QColor(240, 161, 199)
+
+
+class CloseCanvasRect(Figure):
+    shape = [[1, 1, 1, 1],
+             [1, 1, 1, 1],
+             [1, 1, 1, 1],
+             [1, 1, 1, 1]]
+
+    color = QColor(240, 240, 240)

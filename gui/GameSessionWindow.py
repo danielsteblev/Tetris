@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QEvent, QMimeData
 from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon, QDrag, QCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget, QMessageBox
 
+from game_logic import Figure
 from game_logic.GameTetris import GameTetris
 from game_logic.Logic import Logic
 from gui.RulesWindow import RulesWindow
@@ -20,6 +21,7 @@ class GameSessionWindow(QMainWindow):
     CUR_FIGURES_CELL = 40
     LINE_COLOR = QColor(0, 0, 0)
     BACKGROUND_COLOR = QColor(255, 255, 255)
+    CLOSE_CANVAS_RECT = Figure.CloseCanvasRect
 
     def __init__(self):
         super().__init__()
@@ -114,6 +116,7 @@ class GameSessionWindow(QMainWindow):
         # устанавливаю настройки для отслеживания перемещений и т.д
         self.label_set_mouse_settings(self.figure1, self.figure2, self.figure3)
 
+
         # черчу 3 фигуры
         self.draw_figure_in_label(self.figure1, self.game.cur_figures[0])
         self.draw_figure_in_label(self.figure2, self.game.cur_figures[1])
@@ -121,7 +124,6 @@ class GameSessionWindow(QMainWindow):
 
     #  метод для отрисовки фигуры в лейбле
     def draw_figure_in_label(self, label, figure):
-
         painter = QPainter(label.pixmap())
         painter.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
@@ -213,15 +215,17 @@ class GameSessionWindow(QMainWindow):
 
             cur_f = self.game.cur_figures[0]
 
-            self.figure2.clear()
-            self.figure3.clear()
+            # self.figure2.clear()
+            # self.figure3.clear()
+
+            self.figure1.setText("")
 
             self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
             self.clear_label(self.figure1, 800, 130)
 
             self.draw_cells()
-
-            # self.draw_cur_figures()
+            self.draw_figure_in_label(self.figure1, self.CLOSE_CANVAS_RECT)
+            self.draw_cur_figures()
 
         else:
             print("Фигура вне игрового поля!")
@@ -229,10 +233,8 @@ class GameSessionWindow(QMainWindow):
 
         self.update()
 
-
     @staticmethod
     def clear_label(label, start_x, start_y):
-        label.clear()
         label.setCursor(QCursor(Qt.ArrowCursor))
         label.mouseMoveEvent = None
         label.setMouseTracking(False)
