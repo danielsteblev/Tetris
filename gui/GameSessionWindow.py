@@ -43,6 +43,7 @@ class GameSessionWindow(QMainWindow):
 
         canvas = QPixmap(721, 721)
         canvas.fill(Qt.gray)
+
         canvas_figure1 = QPixmap(200, 200)
         canvas_figure1.fill(QColor(240, 240, 240))
 
@@ -53,20 +54,12 @@ class GameSessionWindow(QMainWindow):
         canvas_figure3.fill(QColor(240, 240, 240))
 
         self.canvas.setPixmap(canvas)
+
         self.figure1.setPixmap(canvas_figure1)
-        self.figure1.setMouseTracking(True)
-        self.figure1.mouseMoveEvent = self.mouseMoveEvent
-        self.figure1.mouseReleaseEvent = self.mouseReleaseEvent
 
         self.figure2.setPixmap(canvas_figure2)
-        self.figure2.setMouseTracking(True)
-        self.figure2.mouseMoveEvent = self.mouseMoveEvent
-        self.figure2.mouseReleaseEvent = self.mouseReleaseEvent
 
         self.figure3.setPixmap(canvas_figure3)
-        self.figure3.setMouseTracking(True)
-        self.figure3.mouseMoveEvent = self.mouseMoveEvent
-        self.figure3.mouseReleaseEvent = self.mouseReleaseEvent
 
         self.saveButton.clicked.connect(lambda: self.game.save_game())
 
@@ -80,6 +73,7 @@ class GameSessionWindow(QMainWindow):
 
         # Тут по логике должен рисовать поле
         self.draw_cells()
+        # генерирую и рисую фигуры в лейбл
         self.draw_cur_figures()
 
         self.show()
@@ -183,19 +177,24 @@ class GameSessionWindow(QMainWindow):
 
             self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
 
-            self.figure1.clear()
-            self.figure1.setCursor(QCursor(Qt.ArrowCursor))
-            self.figure1.mouseMoveEvent = None
+            self.clear_label(self.figure1, 800, 130)
 
             self.draw_cells()
-
-            self.figure1.move(800, 130)
 
         else:
             print("Фигура вне игрового поля!")
             self.figure1.move(800, 130)
 
         self.update()
+
+    @staticmethod
+    def clear_label(label, start_x, start_y):
+        label.clear()
+        label.setCursor(QCursor(Qt.ArrowCursor))
+        label.mouseMoveEvent = None
+        label.setMouseTracking(False)
+        label.mouseReleaseEvent = None
+        label.move(start_x, start_y)
 
     def add_figure_to_board(self, cell_x, cell_y, figure):
         for i in range(min(len(figure.shape), self.game.width - cell_x)):
