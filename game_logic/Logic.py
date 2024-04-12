@@ -28,4 +28,12 @@ class Logic:
                 print('+10')
                 game.score += 10
 
+    @staticmethod
+    def can_drag_fugire(figure, cell_x, cell_y, board):
+        for i in range(len(figure.shape)):
+            for j in range(len(figure.shape[0])):
+                if figure.shape[i][j] == board[i + cell_x][j + cell_y] == 1:
+                    return False
+
+        return True
 

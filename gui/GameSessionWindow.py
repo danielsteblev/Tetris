@@ -225,7 +225,7 @@ class GameSessionWindow(QMainWindow):
 
             cur_f = self.game.cur_figures[0]
 
-            can_drag = self.can_drag_fugire(cur_f, cell_col, cell_row)
+            can_drag = Logic.can_drag_fugire(cur_f, cell_x=cell_col, cell_y=cell_row, board=self.game.board)
 
             # self.figure2.clear()
             # self.figure3.clear()
@@ -244,14 +244,6 @@ class GameSessionWindow(QMainWindow):
             self.figure1.move(800, 130)
 
         self.update()
-
-    def can_drag_fugire(self, figure, cell_x, cell_y):
-        for i in range(len(figure.shape)):
-            for j in range(len(figure.shape[0])):
-                if figure.shape[i][j] == self.game.board[i + cell_x][j + cell_y] == 1:
-                    return False
-
-        return True
 
 
 
