@@ -51,13 +51,27 @@ class ShapeZ(Figure):
     shape = [[1, 1, 0],
              [0, 1, 1]]
 
-    color = QColor(204, 171, 247)
+    color = QColor(250, 218, 221)
 
 
 class Rect(Figure):
-    shape = [1, 1]
+    shape = [[0, 1, 1, 0]]
 
-    color = QColor(204, 171, 247)
+    color = QColor(159, 226, 191)
+
+
+class ReverseT(Figure):
+    shape = [[0, 1],
+             [1, 1],
+             [0, 1]]
+
+    color = QColor(127, 199, 255)
+
+
+class Block(Figure):
+    shape = [[0, 1, 0]]
+
+    color = QColor(255, 140, 105)
 
 
 class ShapeReverseZ(Figure):

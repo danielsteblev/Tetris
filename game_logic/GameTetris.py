@@ -16,7 +16,7 @@ class GameTetris:
         self._figures = [Figure.ShapeT, Figure.ShapeLine,
                          Figure.ShapeReverseG, Figure.ShapeSquare,
                          Figure.ShapeT, Figure.ShapeZ,
-                         Figure.ShapeReverseZ]
+                         Figure.ShapeReverseZ, Figure.Block, Figure.ReverseT, Figure.Rect]
 
         if not 'field' in settings:
             self._game_field = [[0 for _ in range(self._board_width)] for _ in range(self._board_height)]

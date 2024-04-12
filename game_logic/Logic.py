@@ -10,7 +10,6 @@ class Logic:
         cur_figures = [game.figures[0], game.figures[1], game.figures[2]]
         return cur_figures
 
-
     @staticmethod
     def check_lines(game: GameTetris):
         for i in range(len(game.board)):
@@ -26,7 +25,7 @@ class Logic:
                 for j in range(len(game.board)):
                     game.board[j][i] = 0
 
-                print('yes')
+                print('+10')
                 game.score += 10
 
 

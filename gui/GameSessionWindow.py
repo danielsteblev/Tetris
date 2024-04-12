@@ -216,31 +216,43 @@ class GameSessionWindow(QMainWindow):
         x, y = self.figure1.pos().x(), self.figure1.pos().y()
         print(x, y)
 
-        cell_row = y // self.cell_size
-        cell_col = x // self.cell_size
-
         #  если в пределах игрового поля
         if self.canvas.x() < x < self.canvas.x() + self.canvas.width() \
                 and self.canvas.y() < y < self.canvas.y() + self.canvas.height():
 
+            cell_row = y // self.cell_size
+            cell_col = x // self.cell_size
+
             cur_f = self.game.cur_figures[0]
+
+            can_drag = self.can_drag_fugire(cur_f, cell_col, cell_row)
 
             # self.figure2.clear()
             # self.figure3.clear()
+            if can_drag:
+                self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
+                self.draw_cells()
+                self.clear_label(self.figure1, 800, 130)
+                self.draw_cur_figures()
 
-            self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
-
-            self.draw_cells()
-
-            self.clear_label(self.figure1, 800, 130)
-
-            self.draw_cur_figures()
+            else:
+                print("Фигура попадает на другую фигуру!")
+                self.figure1.move(800, 130)
 
         else:
             print("Фигура вне игрового поля!")
             self.figure1.move(800, 130)
 
         self.update()
+
+    def can_drag_fugire(self, figure, cell_x, cell_y):
+        for i in range(len(figure.shape)):
+            for j in range(len(figure.shape[0])):
+                if figure.shape[i][j] == self.game.board[i + cell_x][j + cell_y] == 1:
+                    return False
+
+        return True
+
 
 
     def clear_label(self, label, start_x, start_y):
