@@ -21,7 +21,7 @@ class ShapeSquare(Figure):
 
 
 class ShapeLine(Figure):
-    shape = [[1, 1, 1, 1]]
+    shape = [[1, 1, 1]]
 
     color = QColor(183, 64, 201)
 
@@ -50,6 +50,12 @@ class ShapeT(Figure):
 class ShapeZ(Figure):
     shape = [[1, 1, 0],
              [0, 1, 1]]
+
+    color = QColor(204, 171, 247)
+
+
+class Rect(Figure):
+    shape = [1, 1]
 
     color = QColor(204, 171, 247)
 

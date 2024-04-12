@@ -13,13 +13,13 @@ from gui.RulesWindow import RulesWindow
 
 
 class GameSessionWindow(QMainWindow):
-    CANVAS_SIZE = 720
-    CANVAS_WIDTH = 721
-    CANVAS_HEIGHT = 980
+    CANVAS_SIZE = 722
+    CANVAS_WIDTH = 723
+    CANVAS_HEIGHT = 982
     CANVAS_FIGURE_SIZE = 200
     FIXED_SIZE = 200
     CELL_BORDER_WIDTH = 1
-    CUR_FIGURES_CELL = 40
+    CUR_FIGURES_CELL = 60
     LINE_COLOR = QColor(0, 0, 0)
     BACKGROUND_COLOR = QColor(255, 255, 255)
     CLOSE_CANVAS_RECT = Figure.CloseCanvasRect
@@ -43,18 +43,23 @@ class GameSessionWindow(QMainWindow):
     def init_ui(self):
         uic.loadUi('config_file/GameSessionWindow.ui', self)
         self.setWindowIcon(QIcon('images/icon.png'))
+        self.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.saveButton.setStyleSheet("border: 1px solid black;")
+        self.menuButton.setStyleSheet("border: 1px solid black;")
+
+
 
         canvas = QPixmap(721, 721)
         canvas.fill(Qt.gray)
 
         canvas_figure1 = QPixmap(200, 200)
-        canvas_figure1.fill(QColor(240, 240, 240))
+        canvas_figure1.fill(QColor(255, 255, 255))
 
         canvas_figure2 = QPixmap(200, 200)
-        canvas_figure2.fill(QColor(240, 240, 240))
+        canvas_figure2.fill(QColor(255, 255, 255))
 
         canvas_figure3 = QPixmap(200, 200)
-        canvas_figure3.fill(QColor(240, 240, 240))
+        canvas_figure3.fill(QColor(255, 255, 255))
 
         self.canvas.setPixmap(canvas)
 
@@ -101,7 +106,7 @@ class GameSessionWindow(QMainWindow):
                     cur_color = self.game.cur_figures[0].color
 
                 self.draw_square(painter, QColor(0, 0, 0), i * self.cell_size, j * self.cell_size, self.cell_size)
-                self.draw_square(painter, cur_color, i * self.cell_size + 1, j * self.cell_size + 1, self.cell_size)
+                self.draw_square(painter, cur_color, i * self.cell_size, j * self.cell_size, self.cell_size)
 
                 Logic.check_lines(game=self.game)  # проверка полных линий
                 self.score.setText(f"{self.game.score}")
@@ -129,7 +134,7 @@ class GameSessionWindow(QMainWindow):
         painter.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
         # перед рисованием всегда под ним рисую фон
-        self.draw_square(painter, QColor(240, 240, 240), -1, -1, label.width() + 1)
+        self.draw_square(painter, QColor(255, 255, 255), -1, -1, label.width() + 1)
         print(label.x(), label.y(), label.width())
 
         for j in range(len(figure.shape)):
@@ -171,7 +176,6 @@ class GameSessionWindow(QMainWindow):
     def mouseMoveEvent(self, event):  # перемещение мыши
         mouse_pos = event.pos()
         if event.buttons() == Qt.LeftButton:
-
             self.figure1.move(self.figure1.pos() + event.pos())
             print(mouse_pos)
 
@@ -224,8 +228,6 @@ class GameSessionWindow(QMainWindow):
             # self.figure2.clear()
             # self.figure3.clear()
 
-            self.figure1.setText("")
-
             self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
 
             self.draw_cells()
@@ -251,7 +253,8 @@ class GameSessionWindow(QMainWindow):
     def add_figure_to_board(self, cell_x, cell_y, figure):
         for i in range(min(len(figure.shape), self.game.width - cell_x)):
             for j in range(min(len(figure.shape[0]), self.game.height - cell_y)):
-                self.game.board[i + cell_x][j + cell_y] = figure.shape[i][j]
+                if figure.shape[i][j] == 1:
+                    self.game.board[i + cell_x][j + cell_y] = figure.shape[i][j]
 
     @staticmethod
     def draw_square(painter, color, x, y, size):
