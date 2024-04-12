@@ -1,3 +1,5 @@
+from random import choice
+
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QEvent, QMimeData
 from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon, QDrag, QCursor
@@ -15,16 +17,12 @@ class GameSessionWindow(QMainWindow):
     CANVAS_FIGURE_SIZE = 200
     FIXED_SIZE = 200
     CELL_BORDER_WIDTH = 1
+    CUR_FIGURES_CELL = 40
     LINE_COLOR = QColor(0, 0, 0)
     BACKGROUND_COLOR = QColor(255, 255, 255)
 
     def __init__(self):
         super().__init__()
-
-        self.fugire_1 = None
-        self.fugire_2 = None
-        self.fugire_3 = None
-
 
         self.cell_size = None
         self.figure = None
@@ -119,49 +117,26 @@ class GameSessionWindow(QMainWindow):
         cur_figures = Logic.generate_cur_figures(self.game)
         self.game.cur_figures = cur_figures
 
-        self.figure1.setMouseTracking(True)
-        self.figure1.mouseMoveEvent = self.mouseMoveEvent
-        self.figure1.mouseReleaseEvent = self.mouseReleaseEvent
+        # устанавливаю настройки для отслеживания перемещений и т.д
+        self.label_set_mouse_settings(self.figure1, self.figure2, self.figure3)
 
-        self.figure2.setMouseTracking(True)
-        self.figure2.mouseMoveEvent = self.mouseMoveEvent
-        self.figure2.mouseReleaseEvent = self.mouseReleaseEvent
+        # черчу 3 фигуры
+        self.draw_figure_in_label(self.figure1, self.game.cur_figures[0])
+        self.draw_figure_in_label(self.figure2, self.game.cur_figures[1])
+        self.draw_figure_in_label(self.figure3, self.game.cur_figures[2])
 
-        self.figure3.setMouseTracking(True)
-        self.figure3.mouseMoveEvent = self.mouseMoveEvent
-        self.figure3.mouseReleaseEvent = self.mouseReleaseEvent
+    #  метод для отрисовки фигуры в лейбле
+    def draw_figure_in_label(self, label, figure):
+        painter = QPainter(label.pixmap())
+        painter.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
+        for j in range(len(figure.shape)):
+            for k in range(len(figure.shape[j])):
+                if figure.shape[j][k] == 1:
+                    self.draw_square(painter, figure.color,
+                                     j * self.CUR_FIGURES_CELL, k * self.CUR_FIGURES_CELL, self.CUR_FIGURES_CELL)
 
-        painter_figure1 = QPainter(self.figure1.pixmap())
-        painter_figure1.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
-
-        painter_figure2 = QPainter(self.figure2.pixmap())
-        painter_figure2.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
-
-        painter_figure3 = QPainter(self.figure3.pixmap())
-        painter_figure3.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
-
-        for j in range(len(self.game.cur_figures[0].shape)):
-            for k in range(len(self.game.cur_figures[0].shape[j])):
-                if self.game.cur_figures[0].shape[j][k] == 1:
-                    self.draw_square(painter_figure1, self.game.cur_figures[0].color, j * 40,
-                                     k * 40, 40)
-
-        for j in range(len(self.game.cur_figures[1].shape)):
-            for k in range(len(self.game.cur_figures[1].shape[j])):
-                if self.game.cur_figures[1].shape[j][k] == 1:
-                    self.draw_square(painter_figure2, self.game.cur_figures[1].color,
-                                     j * 40, k * 40, 40)
-
-        for j in range(len(self.game.cur_figures[2].shape)):
-            for k in range(len(self.game.cur_figures[2].shape[j])):
-                if self.game.cur_figures[2].shape[j][k] == 1:
-                    self.draw_square(painter_figure3, self.game.cur_figures[2].color,
-                                     j * 40, k * 40, 40)
-
-        painter_figure1.end()
-        painter_figure2.end()
-        painter_figure3.end()
+        painter.end()
 
     def center_window(self):
         qr = self.frameGeometry()
@@ -177,6 +152,13 @@ class GameSessionWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def label_set_mouse_settings(self, *args):
+        for label in args:
+            label.setMouseTracking(True)
+            label.setCursor(QCursor(Qt.OpenHandCursor))
+            label.mouseMoveEvent = self.mouseMoveEvent
+            label.mouseReleaseEvent = self.mouseReleaseEvent
 
     def mouseMoveEvent(self, event):  # перемещение мыши
         mouse_pos = event.pos()
