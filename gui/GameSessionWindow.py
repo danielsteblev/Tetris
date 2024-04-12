@@ -4,6 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt, QEvent, QMimeData
 from PyQt5.QtGui import QColor, QPixmap, QPainter, QPen, QIcon, QDrag, QCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QDesktopWidget, QMessageBox
+from PyQt5.uic.properties import QtCore
 
 from game_logic import Figure
 from game_logic.GameTetris import GameTetris
@@ -127,6 +128,10 @@ class GameSessionWindow(QMainWindow):
         painter = QPainter(label.pixmap())
         painter.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
+        # перед рисованием всегда под ним рисую фон
+        self.draw_square(painter, QColor(240, 240, 240), -1, -1, label.width() + 1)
+        print(label.x(), label.y(), label.width())
+
         for j in range(len(figure.shape)):
             for k in range(len(figure.shape[j])):
                 if figure.shape[j][k] == 1:
@@ -166,6 +171,7 @@ class GameSessionWindow(QMainWindow):
     def mouseMoveEvent(self, event):  # перемещение мыши
         mouse_pos = event.pos()
         if event.buttons() == Qt.LeftButton:
+
             self.figure1.move(self.figure1.pos() + event.pos())
             print(mouse_pos)
 
@@ -206,12 +212,12 @@ class GameSessionWindow(QMainWindow):
         x, y = self.figure1.pos().x(), self.figure1.pos().y()
         print(x, y)
 
+        cell_row = y // self.cell_size
+        cell_col = x // self.cell_size
+
         #  если в пределах игрового поля
         if self.canvas.x() < x < self.canvas.x() + self.canvas.width() \
                 and self.canvas.y() < y < self.canvas.y() + self.canvas.height():
-
-            cell_row = y // self.cell_size
-            cell_col = x // self.cell_size
 
             cur_f = self.game.cur_figures[0]
 
@@ -221,10 +227,11 @@ class GameSessionWindow(QMainWindow):
             self.figure1.setText("")
 
             self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
-            self.clear_label(self.figure1, 800, 130)
 
             self.draw_cells()
-            self.draw_figure_in_label(self.figure1, self.CLOSE_CANVAS_RECT)
+
+            self.clear_label(self.figure1, 800, 130)
+
             self.draw_cur_figures()
 
         else:
@@ -233,8 +240,8 @@ class GameSessionWindow(QMainWindow):
 
         self.update()
 
-    @staticmethod
-    def clear_label(label, start_x, start_y):
+
+    def clear_label(self, label, start_x, start_y):
         label.setCursor(QCursor(Qt.ArrowCursor))
         label.mouseMoveEvent = None
         label.setMouseTracking(False)
