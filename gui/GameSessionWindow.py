@@ -21,6 +21,11 @@ class GameSessionWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.fugire_1 = None
+        self.fugire_2 = None
+        self.fugire_3 = None
+
+
         self.cell_size = None
         self.figure = None
 
@@ -114,6 +119,19 @@ class GameSessionWindow(QMainWindow):
         cur_figures = Logic.generate_cur_figures(self.game)
         self.game.cur_figures = cur_figures
 
+        self.figure1.setMouseTracking(True)
+        self.figure1.mouseMoveEvent = self.mouseMoveEvent
+        self.figure1.mouseReleaseEvent = self.mouseReleaseEvent
+
+        self.figure2.setMouseTracking(True)
+        self.figure2.mouseMoveEvent = self.mouseMoveEvent
+        self.figure2.mouseReleaseEvent = self.mouseReleaseEvent
+
+        self.figure3.setMouseTracking(True)
+        self.figure3.mouseMoveEvent = self.mouseMoveEvent
+        self.figure3.mouseReleaseEvent = self.mouseReleaseEvent
+
+
         painter_figure1 = QPainter(self.figure1.pixmap())
         painter_figure1.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
@@ -184,8 +202,8 @@ class GameSessionWindow(QMainWindow):
             self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
 
             self.figure1.clear()
-            self.figure2.clear()
-            self.figure3.clear()
+            self.figure1.setCursor(QCursor(Qt.ArrowCursor))
+            self.figure1.mouseMoveEvent = None
 
             self.draw_cells()
 
