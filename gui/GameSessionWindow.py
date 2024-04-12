@@ -121,6 +121,7 @@ class GameSessionWindow(QMainWindow):
 
     #  метод для отрисовки фигуры в лейбле
     def draw_figure_in_label(self, label, figure):
+
         painter = QPainter(label.pixmap())
         painter.setPen(QPen(QColor(0, 0, 0), self.CELL_BORDER_WIDTH))
 
@@ -154,11 +155,48 @@ class GameSessionWindow(QMainWindow):
             label.mouseMoveEvent = self.mouseMoveEvent
             label.mouseReleaseEvent = self.mouseReleaseEvent
 
+    # def mouse_move(self, event, label):  # перемещение мыши
+    #     mouse_pos = event.pos()
+    #     if event.buttons() == Qt.LeftButton:
+    #         label.move(label.pos() + event.pos())
+    #         print(mouse_pos)
+
     def mouseMoveEvent(self, event):  # перемещение мыши
         mouse_pos = event.pos()
         if event.buttons() == Qt.LeftButton:
             self.figure1.move(self.figure1.pos() + event.pos())
             print(mouse_pos)
+
+    # def mouse_release(self, event, label):  # отпускаю мышь
+    #     print("Мышь отпущена!")
+    #
+    #     start_x = label.pos().x()
+    #     start_y = label.pos().y()
+    #     print(start_x, start_y)
+    #
+    #     x, y = label.pos().x(), label.pos().y()
+    #     print(x, y)
+    #
+    #     #  если в пределах игрового поля
+    #     if self.canvas.x() < x < self.canvas.x() + self.canvas.width() \
+    #             and self.canvas.y() < y < self.canvas.y() + self.canvas.height():
+    #
+    #         cell_row = y // self.cell_size
+    #         cell_col = x // self.cell_size
+    #
+    #         cur_f = self.game.cur_figures[label[-1]]
+    #
+    #         self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
+    #
+    #         self.clear_label(label, start_x, start_y)
+    #
+    #         self.draw_cells()
+    #
+    #     else:
+    #         print("Фигура вне игрового поля!")
+    #         label.move(start_x, start_y)
+    #
+    #     self.update()
 
     def mouseReleaseEvent(self, event):  # отпускаю мышь
         print("Мышь отпущена!")
@@ -175,17 +213,22 @@ class GameSessionWindow(QMainWindow):
 
             cur_f = self.game.cur_figures[0]
 
-            self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
+            self.figure2.clear()
+            self.figure3.clear()
 
+            self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
             self.clear_label(self.figure1, 800, 130)
 
             self.draw_cells()
+
+            # self.draw_cur_figures()
 
         else:
             print("Фигура вне игрового поля!")
             self.figure1.move(800, 130)
 
         self.update()
+
 
     @staticmethod
     def clear_label(label, start_x, start_y):
