@@ -33,7 +33,6 @@ class GameSessionWindow(QMainWindow):
         self.rules_window = RulesWindow()
 
         self.cur_color = None
-        self.cur_figures = []
 
         self.game = None
         self.is_rules_shown = False
@@ -115,8 +114,7 @@ class GameSessionWindow(QMainWindow):
 
     def draw_cur_figures(self):
 
-        if len(self.game.cur_figures) == 1:
-            # генерирую 3 фигуры
+        if len(self.game.cur_figures) == 0:
             cur_figures = Logic.generate_cur_figures(self.game)
             self.game.cur_figures = cur_figures
 
@@ -125,10 +123,8 @@ class GameSessionWindow(QMainWindow):
 
         # черчу 3 фигуры
         self.draw_figure_in_label(self.figure1, self.game.cur_figures[0])
-        if len(self.game.cur_figures) >= 2:
-            self.draw_figure_in_label(self.figure2, self.game.cur_figures[1])
-        if len(self.game.cur_figures) >= 3:
-            self.draw_figure_in_label(self.figure3, self.game.cur_figures[2])
+        self.draw_figure_in_label(self.figure2, self.game.cur_figures[1])
+        self.draw_figure_in_label(self.figure3, self.game.cur_figures[2])
 
     #  метод для отрисовки фигуры в лейбле
     def draw_figure_in_label(self, label, figure):
@@ -226,7 +222,6 @@ class GameSessionWindow(QMainWindow):
             cell_col = x // self.cell_size
 
             cur_f = self.game.cur_figures.pop(0)
-
             can_drag = Logic.can_drag_fugire(cur_f, cell_x=cell_col, cell_y=cell_row, board=self.game.board)
 
             if can_drag:

@@ -95,7 +95,7 @@ class GameTetris:
 
     @property
     def cur_figures(self):
-        return self._figures
+        return self._cur_figures
 
     @cur_figures.setter
     def cur_figures(self, value):

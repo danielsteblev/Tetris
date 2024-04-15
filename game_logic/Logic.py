@@ -6,8 +6,11 @@ from game_logic.GameTetris import GameTetris
 class Logic:
     @staticmethod
     def generate_cur_figures(game: GameTetris):
-        random.shuffle(game.figures)
-        cur_figures = [game.figures[0], game.figures[1], game.figures[2]]
+        cur_figures = []
+        for i in range(0, 20):
+            random.shuffle(game.figures)
+            cur_figures.append(game.figures[0])
+
         return cur_figures
 
     @staticmethod
@@ -37,5 +40,14 @@ class Logic:
                         return False
                 else:
                     return False
+
+        return True
+
+    @staticmethod
+    def is_lose(figure, board):
+        figure = figure.copy()
+        figure.replace(1, 0)
+        if figure not in board:
+            return False
 
         return True
