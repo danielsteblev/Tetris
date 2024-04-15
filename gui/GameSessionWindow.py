@@ -33,6 +33,7 @@ class GameSessionWindow(QMainWindow):
         self.rules_window = RulesWindow()
 
         self.cur_color = None
+        self.cur_figures = []
 
         self.game = None
         self.is_rules_shown = False
@@ -46,8 +47,6 @@ class GameSessionWindow(QMainWindow):
         self.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.saveButton.setStyleSheet("border: 1px solid black;")
         self.menuButton.setStyleSheet("border: 1px solid black;")
-
-
 
         canvas = QPixmap(721, 721)
         canvas.fill(Qt.gray)
@@ -115,18 +114,21 @@ class GameSessionWindow(QMainWindow):
         self.update()
 
     def draw_cur_figures(self):
-        # генерирую 3 фигуры
-        cur_figures = Logic.generate_cur_figures(self.game)
-        self.game.cur_figures = cur_figures
+
+        if len(self.game.cur_figures) == 1:
+            # генерирую 3 фигуры
+            cur_figures = Logic.generate_cur_figures(self.game)
+            self.game.cur_figures = cur_figures
 
         # устанавливаю настройки для отслеживания перемещений и т.д
         self.label_set_mouse_settings(self.figure1, self.figure2, self.figure3)
 
-
         # черчу 3 фигуры
         self.draw_figure_in_label(self.figure1, self.game.cur_figures[0])
-        self.draw_figure_in_label(self.figure2, self.game.cur_figures[1])
-        self.draw_figure_in_label(self.figure3, self.game.cur_figures[2])
+        if len(self.game.cur_figures) >= 2:
+            self.draw_figure_in_label(self.figure2, self.game.cur_figures[1])
+        if len(self.game.cur_figures) >= 3:
+            self.draw_figure_in_label(self.figure3, self.game.cur_figures[2])
 
     #  метод для отрисовки фигуры в лейбле
     def draw_figure_in_label(self, label, figure):
@@ -223,17 +225,15 @@ class GameSessionWindow(QMainWindow):
             cell_row = y // self.cell_size
             cell_col = x // self.cell_size
 
-            cur_f = self.game.cur_figures[0]
+            cur_f = self.game.cur_figures.pop(0)
 
             can_drag = Logic.can_drag_fugire(cur_f, cell_x=cell_col, cell_y=cell_row, board=self.game.board)
 
-            # self.figure2.clear()
-            # self.figure3.clear()
             if can_drag:
                 self.add_figure_to_board(cell_x=cell_col, cell_y=cell_row, figure=cur_f)
                 self.draw_cells()
                 self.clear_label(self.figure1, 800, 130)
-                self.draw_cur_figures()
+                self.draw_cur_figures()  # если в списке не осталось фигур - генерирую и рисую новые
 
             else:
                 print("Фигура попадает на другую фигуру!")
@@ -244,8 +244,6 @@ class GameSessionWindow(QMainWindow):
             self.figure1.move(800, 130)
 
         self.update()
-
-
 
     def clear_label(self, label, start_x, start_y):
         label.setCursor(QCursor(Qt.ArrowCursor))

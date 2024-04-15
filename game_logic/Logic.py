@@ -32,8 +32,10 @@ class Logic:
     def can_drag_fugire(figure, cell_x, cell_y, board):
         for i in range(len(figure.shape)):
             for j in range(len(figure.shape[0])):
-                if figure.shape[i][j] == board[i + cell_x][j + cell_y] == 1:
+                if i + cell_x < len(board) and j + cell_y < len(board[0]):
+                    if figure.shape[i][j] == board[i + cell_x][j + cell_y] == 1:
+                        return False
+                else:
                     return False
 
         return True
-
